@@ -591,7 +591,8 @@ body.nav-open{overflow:hidden;}
 
 /* ---------- Home accordion ---------- */
 .accordion{border-top:1px solid rgba(37,40,43,0.14);}
-.acc{border-bottom:1px solid rgba(37,40,43,0.14);}
+.acc{border-bottom:1px solid rgba(37,40,43,0.14); padding:0 12px; margin:0 -12px; border-radius:3px; transition:background 350ms ease;}
+.acc:hover{background:rgba(198,211,230,0.6);}
 .acc__btn{
   width:100%; background:none; border:none; cursor:pointer; text-align:left;
   display:flex; align-items:center; justify-content:space-between; gap:20px;
@@ -620,20 +621,30 @@ body.nav-open{overflow:hidden;}
 /* ---------- Menu page: navy ground ---------- */
 #page-menu{background:#33445f; color:#f7f3ea; position:relative;}
 #page-menu > section{position:relative; z-index:1;}
-.menu-band{position:relative; overflow:visible;}
-.menu-band .menu-moon{
-  position:absolute; top:-6px; right:4vw;
-  width:min(22vw, 240px); height:min(22vw, 240px); aspect-ratio:1 / 1;
-  z-index:0; pointer-events:none; opacity:1; overflow:visible; display:block;
+.menu-band{position:relative; overflow:hidden;}
+.menu-band .menu-stars{
+  position:absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%;
+  z-index:0; pointer-events:none; display:block;
 }
-.menu-band .container{position:relative; z-index:1;}
-.menu-band .menu-moon > g{pointer-events:auto; cursor:default;}
-.menu-moon .moon-bloom, .menu-moon .moon-disc{transition:opacity 550ms ease, transform 550ms ease;}
-.menu-moon .moon-disc > circle:first-child{transition:fill 550ms ease;}
-.menu-moon > g:hover .moon-bloom{opacity:1;}
-.menu-moon > g:hover .moon-disc{transform:translateY(-1px);}
-.menu-moon > g:hover .moon-disc > circle:first-child{fill:#e8e6e2;}
-@media (max-width:700px){.menu-band .menu-moon{width:40vw; height:40vw; right:2vw; top:2px; opacity:0.85;}}
+.menu-band .container{position:relative; z-index:2;}
+/* the moon rides across the band on a slow CSS track, so it works at every width */
+.menu-band .moon{
+  position:absolute; top:64px; left:-12%; width:140px; height:140px; margin-top:-70px;
+  z-index:1; cursor:default;
+  animation:moonCross 240s linear infinite;
+  animation-delay:-96s;                 /* begins about 40% across, so it is on screen at once */
+}
+.menu-band .moon svg{display:block; width:100%; height:100%; overflow:visible;}
+@keyframes moonCross{from{left:-12%;} to{left:104%;}}
+@media (max-width:700px){.menu-band .moon{width:110px; height:110px; margin-top:-55px; top:58px;}}
+@media (prefers-reduced-motion: reduce){.menu-band .moon{left:70%; animation:none;}}
+.moon .moon-bloom{transition:opacity 550ms ease;}
+.moon .moon-disc{transition:transform 550ms ease;}
+.moon .moon-disc > circle:first-child{transition:fill 550ms ease;}
+.moon:hover .moon-bloom, .moon.is-lit .moon-bloom{opacity:1;}
+.moon:hover .moon-disc, .moon.is-lit .moon-disc{transform:translateY(-1px);}
+.moon:hover .moon-disc > circle:first-child, .moon.is-lit .moon-disc > circle:first-child{fill:#e8e6e2;}
+
 #page-menu .bg-navy-pale{background:rgba(255,253,248,0.05); border-bottom:1px solid rgba(255,253,248,0.1);}
 #page-menu .bg-white{background:transparent;}
 #page-menu h1, #page-menu h3, #page-menu .tariff-row__name{color:#f7f3ea;}
@@ -651,7 +662,7 @@ body.nav-open{overflow:hidden;}
 }
 #page-menu .tariff-row::before{
   content:""; position:absolute; inset:-6px -4px; pointer-events:none; z-index:-1; border-radius:6px;
-  background:radial-gradient(ellipse 46% 120% at 24% 50%, rgba(243,217,214,0.16) 0%, rgba(246,240,226,0.08) 45%, rgba(246,240,226,0) 75%);
+  background:radial-gradient(ellipse 48% 130% at 24% 50%, rgba(243,217,214,0.30) 0%, rgba(246,240,226,0.14) 45%, rgba(246,240,226,0) 78%);
   opacity:0; transition:opacity 550ms ease;
 }
 #page-menu .tariff-row::after{
@@ -660,10 +671,11 @@ body.nav-open{overflow:hidden;}
   opacity:0; transition:opacity 550ms ease;
 }
 #page-menu .tariff-row__name, #page-menu .tariff-row__price{transition:color 550ms ease;}
-#page-menu .tariff-row:hover{transform:translateY(-1px);}
-#page-menu .tariff-row:hover::before, #page-menu .tariff-row:hover::after{opacity:1;}
-#page-menu .tariff-row:hover .tariff-row__name{color:#fbf5e8;}
-#page-menu .tariff-row:hover .tariff-row__price{color:#f0c9b5;}
+#page-menu .tariff-row:hover, #page-menu .tariff-row.is-lit{transform:translateY(-1px);}
+#page-menu .tariff-row:hover::before, #page-menu .tariff-row:hover::after,
+#page-menu .tariff-row.is-lit::before, #page-menu .tariff-row.is-lit::after{opacity:1;}
+#page-menu .tariff-row:hover .tariff-row__name, #page-menu .tariff-row.is-lit .tariff-row__name{color:#fffaf0;}
+#page-menu .tariff-row:hover .tariff-row__price, #page-menu .tariff-row.is-lit .tariff-row__price{color:#f5cdb8;}
 #page-menu .tariff-group__head{border-bottom-color:rgba(246,231,170,0.55) !important;}
 #page-menu .tariff-panel{background:rgba(255,253,248,0.06); border:1px solid rgba(255,253,248,0.12);}
 #page-menu .tariff-panel.alt{background:rgba(246,231,170,0.09); border-color:rgba(246,231,170,0.25);}
@@ -863,61 +875,51 @@ body.nav-open{overflow:hidden;}
 
 <!-- ================= MENU ================= -->
 <section id="page-menu" class="page">
-  <section class="section--tight bg-navy-pale menu-band" style="padding-top:64px;">
-  <svg class="menu-moon" id="menuMoon" viewBox="0 0 400 400" width="240" height="240" aria-hidden="true">
-        <defs>
-          <radialGradient id="moonHalo" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#f6f1e6" stop-opacity="0.42">
-              <animate attributeName="stop-color" values="#f6f1e6;#f3dcd8;#f6f1e6;#f2e6cf;#f6f1e6" keyTimes="0;0.28;0.5;0.78;1" dur="46s" repeatCount="indefinite"/>
-            </stop>
-            <stop offset="55%" stop-color="#eae6df" stop-opacity="0.14"/>
-            <stop offset="100%" stop-color="#eae6df" stop-opacity="0"/>
-          </radialGradient>
-          <radialGradient id="moonBloom" cx="42%" cy="50%" r="55%">
-            <stop offset="0%" stop-color="#f3d9d4" stop-opacity="0.55"/>
-            <stop offset="45%" stop-color="#f6efe0" stop-opacity="0.28"/>
-            <stop offset="100%" stop-color="#f6efe0" stop-opacity="0"/>
-          </radialGradient>
-          <path id="moonPath" d="M 0 0 C 8 -6, 20 -8, 30 -2 C 20 -8, 8 -6, 0 0 Z"/>
-        </defs>
-        <g transform="translate(300,110)">
-          <g>
-            <animateMotion dur="60s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" keyPoints="0;1;0">
-              <mpath href="#moonPath"/>
-            </animateMotion>
-            <!-- halo: expands and contracts almost imperceptibly -->
-            <circle r="74" fill="url(#moonHalo)">
-              <animate attributeName="r" values="74;79;74" dur="14s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1"/>
-            </circle>
-            <!-- hover: a warmer pearl bloom that fades in behind the disc -->
-            <circle class="moon-bloom" r="52" fill="url(#moonBloom)" opacity="0"/>
-            <!-- the disc, engraved: cool ivory-grey; the shadow is drawn to today's phase by script -->
-            <g id="moonDisc" class="moon-disc">
-              <circle r="26" fill="#dcdfe4" stroke="#b7bcc6" stroke-width="0.7"/>
-              <path d="M -20 -14 A 26 26 0 0 0 -20 14" fill="none" stroke="#c6cad3" stroke-width="0.5" opacity="0.6"/>
-              <path d="M 15 -20 A 26 26 0 0 1 15 20" fill="none" stroke="#c6cad3" stroke-width="0.4" opacity="0.45"/>
-              <path id="moonShadow" d="" fill="#33445f" opacity="0.96"/>
-              <circle r="26" fill="none" stroke="#b7bcc6" stroke-width="0.7"/>
-            </g>
-            <!-- a few small stars keeping the moon company -->
-            <g fill="#f4efe4">
-              <path d="M -62 -44 l 1.4 3.2 3.2 1.4 -3.2 1.4 -1.4 3.2 -1.4 -3.2 -3.2 -1.4 3.2 -1.4 z" opacity="0.7"><animate attributeName="opacity" values="0.7;0.35;0.7" dur="7s" repeatCount="indefinite"/></path>
-              <path d="M 58 -52 l 1.1 2.5 2.5 1.1 -2.5 1.1 -1.1 2.5 -1.1 -2.5 -2.5 -1.1 2.5 -1.1 z" opacity="0.6"><animate attributeName="opacity" values="0.6;0.3;0.6" dur="9s" repeatCount="indefinite"/></path>
-              <path d="M 66 30 l 1.2 2.8 2.8 1.2 -2.8 1.2 -1.2 2.8 -1.2 -2.8 -2.8 -1.2 2.8 -1.2 z" opacity="0.65"><animate attributeName="opacity" values="0.65;0.3;0.65" dur="11s" repeatCount="indefinite"/></path>
-              <circle cx="-70" cy="20" r="1" opacity="0.5"><animate attributeName="opacity" values="0.5;0.2;0.5" dur="6s" repeatCount="indefinite"/></circle>
-              <circle cx="-8" cy="-70" r="0.9" opacity="0.5"><animate attributeName="opacity" values="0.5;0.25;0.5" dur="8s" repeatCount="indefinite"/></circle>
-            </g>
-            <!-- dust: a few faint points drifting on their own -->
-            <g fill="#e6e2d8">
-              <circle cx="-48" cy="-30" r="0.9" opacity="0.35"><animate attributeName="cx" values="-48;-44;-49;-48" dur="23s" repeatCount="indefinite"/><animate attributeName="cy" values="-30;-33;-28;-30" dur="29s" repeatCount="indefinite"/></circle>
-              <circle cx="52" cy="-18" r="0.7" opacity="0.3"><animate attributeName="cx" values="52;56;50;52" dur="31s" repeatCount="indefinite"/><animate attributeName="cy" values="-18;-22;-16;-18" dur="19s" repeatCount="indefinite"/></circle>
-              <circle cx="38" cy="44" r="0.8" opacity="0.32"><animate attributeName="cx" values="38;34;40;38" dur="27s" repeatCount="indefinite"/><animate attributeName="cy" values="44;47;42;44" dur="17s" repeatCount="indefinite"/></circle>
-              <circle cx="-30" cy="50" r="0.6" opacity="0.28"><animate attributeName="cx" values="-30;-27;-33;-30" dur="21s" repeatCount="indefinite"/><animate attributeName="cy" values="50;53;48;50" dur="25s" repeatCount="indefinite"/></circle>
-              <circle cx="0" cy="-58" r="0.7" opacity="0.3"><animate attributeName="cx" values="0;4;-3;0" dur="33s" repeatCount="indefinite"/><animate attributeName="cy" values="-58;-55;-60;-58" dur="23s" repeatCount="indefinite"/></circle>
-            </g>
-          </g>
-        </g>
-      </svg>
+  <section class="section--tight bg-navy-pale menu-band" style="padding-top:150px; padding-bottom:60px;">
+  <svg class="menu-stars" viewBox="0 0 1200 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g fill="#f4efe4">
+      <path d="M 140 40 l 1.4 3.2 3.2 1.4 -3.2 1.4 -1.4 3.2 -1.4 -3.2 -3.2 -1.4 3.2 -1.4 z" opacity="0.6"><animate attributeName="opacity" values="0.6;0.3;0.6" dur="7s" repeatCount="indefinite"/></path>
+      <path d="M 420 130 l 1.1 2.5 2.5 1.1 -2.5 1.1 -1.1 2.5 -1.1 -2.5 -2.5 -1.1 2.5 -1.1 z" opacity="0.5"><animate attributeName="opacity" values="0.5;0.25;0.5" dur="9s" repeatCount="indefinite"/></path>
+      <path d="M 780 34 l 1.2 2.8 2.8 1.2 -2.8 1.2 -1.2 2.8 -1.2 -2.8 -2.8 -1.2 2.8 -1.2 z" opacity="0.55"><animate attributeName="opacity" values="0.55;0.28;0.55" dur="11s" repeatCount="indefinite"/></path>
+      <path d="M 1040 140 l 1.3 3 3 1.3 -3 1.3 -1.3 3 -1.3 -3 -3 -1.3 3 -1.3 z" opacity="0.55"><animate attributeName="opacity" values="0.55;0.3;0.55" dur="8s" repeatCount="indefinite"/></path>
+      <path d="M 560 150 l 1.1 2.5 2.5 1.1 -2.5 1.1 -1.1 2.5 -1.1 -2.5 -2.5 -1.1 2.5 -1.1 z" opacity="0.5"><animate attributeName="opacity" values="0.5;0.25;0.5" dur="10s" repeatCount="indefinite"/></path>
+      <circle cx="260" cy="150" r="1" opacity="0.45"/><circle cx="600" cy="28" r="0.9" opacity="0.45"/><circle cx="960" cy="60" r="1" opacity="0.4"/><circle cx="1150" cy="100" r="0.8" opacity="0.4"/><circle cx="60" cy="110" r="0.9" opacity="0.4"/>
+    </g>
+  </svg>
+  <!-- the moon: crosses the whole band left to right, one pass every four minutes -->
+  <div class="moon" id="moonBody" aria-hidden="true">
+    <svg viewBox="-70 -70 140 140" id="menuMoon" width="140" height="140">
+      <defs>
+        <radialGradient id="moonHalo" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#f6f1e6" stop-opacity="0.45">
+            <animate attributeName="stop-color" values="#f6f1e6;#f3dcd8;#f6f1e6;#f2e6cf;#f6f1e6" keyTimes="0;0.28;0.5;0.78;1" dur="46s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="55%" stop-color="#eae6df" stop-opacity="0.14"/>
+          <stop offset="100%" stop-color="#eae6df" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="moonBloom" cx="42%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#f3d9d4" stop-opacity="0.6"/>
+          <stop offset="45%" stop-color="#f6efe0" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#f6efe0" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle r="66" fill="url(#moonHalo)"><animate attributeName="r" values="66;70;66" dur="14s" repeatCount="indefinite"/></circle>
+      <circle class="moon-bloom" r="48" fill="url(#moonBloom)" opacity="0"/>
+      <g class="moon-disc">
+        <circle r="24" fill="#dcdfe4" stroke="#b7bcc6" stroke-width="0.7"/>
+        <path d="M -18 -13 A 24 24 0 0 0 -18 13" fill="none" stroke="#c6cad3" stroke-width="0.5" opacity="0.6"/>
+        <path d="M 14 -18 A 24 24 0 0 1 14 18" fill="none" stroke="#c6cad3" stroke-width="0.4" opacity="0.45"/>
+        <path d="M 0 -24 A 24 24 0 0 0 0 24 A 19 24 0 0 1 0 -24 Z" fill="#33445f" opacity="0.96"/>
+        <circle r="24" fill="none" stroke="#b7bcc6" stroke-width="0.7"/>
+      </g>
+      <g fill="#e6e2d8">
+        <circle cx="-44" cy="-28" r="0.9" opacity="0.4"><animate attributeName="cy" values="-28;-31;-26;-28" dur="29s" repeatCount="indefinite"/></circle>
+        <circle cx="48" cy="-16" r="0.7" opacity="0.35"><animate attributeName="cy" values="-16;-20;-14;-16" dur="19s" repeatCount="indefinite"/></circle>
+        <circle cx="34" cy="40" r="0.8" opacity="0.35"><animate attributeName="cx" values="34;30;36;34" dur="27s" repeatCount="indefinite"/></circle>
+        <circle cx="-28" cy="46" r="0.6" opacity="0.3"><animate attributeName="cx" values="-28;-25;-31;-28" dur="21s" repeatCount="indefinite"/></circle>
+      </g>
+    </svg>
+  </div>
     <div class="container center">
       <h1 style="font-size:clamp(2.2rem,4vw,3.2rem); margin:0;">The Menu</h1>
     </div>
@@ -1631,37 +1633,18 @@ window.addEventListener('resize', () => {
 })();
 
 /* ============================================================
-   MOON PHASE — drawn for today's date; lit limb oriented for the
-   viewer's hemisphere (guessed from their time zone)
+   TOUCH: a tap lights a menu row (or the moon) the way hover does
    ============================================================ */
 (function(){
-  const shadow = document.getElementById('moonShadow');
-  const disc = document.getElementById('moonDisc');
-  if(!shadow || !disc) return;
-  const SYNODIC = 29.530588853;
-  const REF = Date.UTC(2000, 0, 6, 18, 14);            // a known new moon
-  const days = (Date.now() - REF) / 86400000;
-  const phase = (((days % SYNODIC) + SYNODIC) % SYNODIC) / SYNODIC;   // 0 new → 0.5 full → 1 new
-  const r = 26;
-  const t = r * Math.cos(2 * Math.PI * phase);           // terminator half-width, signed
-  const rx = Math.abs(t).toFixed(2);
-  const sweep = t >= 0 ? 0 : 1;
-  // dark region = left half-disc + terminator ellipse; mirrored for a waning moon
-  shadow.setAttribute('d', 'M 0 ' + (-r) + ' A ' + r + ' ' + r + ' 0 0 0 0 ' + r + ' A ' + rx + ' ' + r + ' 0 0 ' + sweep + ' 0 ' + (-r) + ' Z');
-  let flip = phase > 0.5;
-  try{
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-    if(/^(Australia|Antarctica)\/|^Pacific\/(Auckland|Fiji|Tongatapu|Apia|Chatham)|^America\/(Sao_Paulo|Buenos_Aires|Argentina|Santiago|Montevideo|Lima|La_Paz|Asuncion)|^Africa\/(Johannesburg|Maputo|Harare|Windhoek|Gaborone|Lusaka|Maseru|Mbabane)|^Indian\/(Mauritius|Reunion)/.test(tz)) flip = !flip;
-  }catch(e){}
-  shadow.setAttribute('transform', flip ? 'scale(-1,1)' : '');
-  const illum = Math.round((1 - Math.cos(2 * Math.PI * phase)) / 2 * 100);
-  const names = ['New Moon','Waxing Crescent','First Quarter','Waxing Gibbous','Full Moon','Waning Gibbous','Last Quarter','Waning Crescent'];
-  const idx = Math.round(phase * 8) % 8;
-  const label = names[idx] + ' · ' + illum + '% illuminated';
-  disc.setAttribute('aria-label', label);
-  const title = document.createElementNS('http://www.w3.org/2000/svg','title');
-  title.textContent = label;
-  disc.appendChild(title);
+  function light(el){
+    el.classList.add('is-lit');
+    setTimeout(() => el.classList.remove('is-lit'), 1100);
+  }
+  document.querySelectorAll('#page-menu .tariff-row').forEach(row => {
+    row.addEventListener('touchstart', () => light(row), {passive:true});
+  });
+  const moon = document.getElementById('moonBody');
+  if(moon) moon.addEventListener('touchstart', () => light(moon), {passive:true});
 })();
 
 /* ============================================================
