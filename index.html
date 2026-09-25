@@ -622,8 +622,9 @@ body.nav-open{overflow:hidden;}
 #page-menu > section{position:relative; z-index:1;}
 .menu-band{position:relative; overflow:visible;}
 .menu-band .menu-moon{
-  position:absolute; top:-6px; right:4vw; width:min(22vw, 240px); height:auto;
-  z-index:0; pointer-events:none; opacity:0.9;
+  position:absolute; top:-6px; right:4vw;
+  width:min(22vw, 240px); height:min(22vw, 240px); aspect-ratio:1 / 1;
+  z-index:0; pointer-events:none; opacity:1; overflow:visible; display:block;
 }
 .menu-band .container{position:relative; z-index:1;}
 .menu-band .menu-moon > g{pointer-events:auto; cursor:default;}
@@ -632,7 +633,7 @@ body.nav-open{overflow:hidden;}
 .menu-moon > g:hover .moon-bloom{opacity:1;}
 .menu-moon > g:hover .moon-disc{transform:translateY(-1px);}
 .menu-moon > g:hover .moon-disc > circle:first-child{fill:#e8e6e2;}
-@media (max-width:700px){.menu-band .menu-moon{width:40vw; right:2vw; top:2px; opacity:0.75;}}
+@media (max-width:700px){.menu-band .menu-moon{width:40vw; height:40vw; right:2vw; top:2px; opacity:0.85;}}
 #page-menu .bg-navy-pale{background:rgba(255,253,248,0.05); border-bottom:1px solid rgba(255,253,248,0.1);}
 #page-menu .bg-white{background:transparent;}
 #page-menu h1, #page-menu h3, #page-menu .tariff-row__name{color:#f7f3ea;}
@@ -644,7 +645,8 @@ body.nav-open{overflow:hidden;}
 
 /* hover: a 1px lift, mother-of-pearl glow behind the centre-left, warmer title and price, a warm rule beneath */
 #page-menu .tariff-row{
-  position:relative; padding-left:6px; padding-right:6px; margin:0 -6px;
+  position:relative; isolation:isolate; z-index:0;
+  padding-left:6px; padding-right:6px; margin:0 -6px;
   transition:transform 550ms ease;
 }
 #page-menu .tariff-row::before{
@@ -862,13 +864,13 @@ body.nav-open{overflow:hidden;}
 <!-- ================= MENU ================= -->
 <section id="page-menu" class="page">
   <section class="section--tight bg-navy-pale menu-band" style="padding-top:64px;">
-  <svg class="menu-moon" id="menuMoon" viewBox="0 0 400 400" aria-hidden="true">
+  <svg class="menu-moon" id="menuMoon" viewBox="0 0 400 400" width="240" height="240" aria-hidden="true">
         <defs>
           <radialGradient id="moonHalo" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#f6f1e6" stop-opacity="0.32">
+            <stop offset="0%" stop-color="#f6f1e6" stop-opacity="0.42">
               <animate attributeName="stop-color" values="#f6f1e6;#f3dcd8;#f6f1e6;#f2e6cf;#f6f1e6" keyTimes="0;0.28;0.5;0.78;1" dur="46s" repeatCount="indefinite"/>
             </stop>
-            <stop offset="55%" stop-color="#eae6df" stop-opacity="0.10"/>
+            <stop offset="55%" stop-color="#eae6df" stop-opacity="0.14"/>
             <stop offset="100%" stop-color="#eae6df" stop-opacity="0"/>
           </radialGradient>
           <radialGradient id="moonBloom" cx="42%" cy="50%" r="55%">
